@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class Server {
         ServerSocket server;
         int port = 80;
         ArrayList <Socket> clients = new ArrayList<>();
+        ArrayList <PrintWriter> clients_writer = new ArrayList<>();
         
         // Open the Server
         try {
@@ -32,6 +34,7 @@ public class Server {
                 //Accept the user connection and add to the clients array.
                 Socket client = server.accept();
                 clients.add(client);
+                clients_writer.add(new PrintWriter(client.getOutputStream(), true));
             } while (true);
 
         } catch (IOException e) {
