@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,15 +13,17 @@ import java.net.UnknownHostException;
 
 /**
  *
- * @author superkorlas
+ * @author Alejandro de la Plata Ramos
  */
 public class ProcesoEscribir extends Thread 
 {
+    private final String clientName;
     private final String hostName;
     private final int portNumber;
-    public ProcesoEscribir(String msg, String hostName, int portNumber)
+
+    public ProcesoEscribir(String clientName, String hostName, int portNumber)
     {
-        super(msg);
+        this.clientName = clientName;
         this.hostName = hostName;
         this.portNumber = portNumber;
         
@@ -40,7 +41,8 @@ public class ProcesoEscribir extends Thread
             String userInput;
             while ((userInput = stdIn.readLine()) != null) 
             {
-                out.println("Client: " + userInput);
+                //Gestionar mensjaje.
+                out.println(clientName + " " + userInput);
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);

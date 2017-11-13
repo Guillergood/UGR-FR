@@ -22,9 +22,10 @@ public class Server {
      */
     public static void main(String[] args) {
         ServerSocket server;
-        int port = 80;
-        ArrayList <Socket> clients = new ArrayList<>();
-        ArrayList <PrintWriter> clients_writer = new ArrayList<>();
+        int port = 2222;
+        int maxClients = 10;
+        int totalClients = 0;
+        Procesador[] threads = new Procesador[maxClients];
         
         // Open the Server
         try {
@@ -33,8 +34,21 @@ public class Server {
             do {
                 //Accept the user connection and add to the clients array.
                 Socket client = server.accept();
-                clients.add(client);
-                clients_writer.add(new PrintWriter(client.getOutputStream(), true));
+                int i;
+                boolean asignado = false;
+                for (i = 0; i < maxClients && !asignado; i++) {
+                    if (threads[i] == null) {
+                        threads[i] = new Procesador(client, threads);
+                        System.out.print("Un cliente lanzado ...");
+                        threads[i].start();
+                        asignado = true;
+                    }
+                } 
+                if (!asignado) {
+                    System.out.print("Chat lleno, por favor, inténtelo más tarde");
+                    client.close();
+                }
+                
             } while (true);
 
         } catch (IOException e) {

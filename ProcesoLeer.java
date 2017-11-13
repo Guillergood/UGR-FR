@@ -20,9 +20,8 @@ public class ProcesoLeer extends Thread
     private String hostName;
     private int portNumber;
     
-    public ProcesoLeer(String msg, String hostName, int portNumber)
+    public ProcesoLeer(String hostName, int portNumber)
     {
-            super(msg);
             this.hostName = hostName;
             this.portNumber = portNumber;
     }
