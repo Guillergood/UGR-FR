@@ -20,7 +20,7 @@ import java.io.IOException;
     Socket clientSocket;
     private int maxClients;
     private final Procesador[] threads;
-    private final ArrayList <String> names = new ArrayList<>();
+    private static ArrayList <String> names = new ArrayList<>();
     BufferedReader in = null;
     PrintWriter out = null;
 
@@ -59,15 +59,17 @@ import java.io.IOException;
                                 }
                             }
                             //Listamos los usuarios:
+                            this.out.println("Los usuarios conectados actualmente son:\n");
                             for (String n : names) {
                                 this.out.println("Usuario: " + n + "\n");
                             }
 
                         }
                     } else if (words[1].trim().startsWith("@")) {
+                        words = words[1].split("\\s+", 2);
                         mensaje = words[1].trim();
-                        words = mensaje.split("\\s+", 2);
                         if (names.contains(words[0].trim())) {
+                            //QUE MUESTRE QUIEN HA SIDO!!!!
                             threads[names.indexOf(words[0].trim())].out.println(mensaje);
                         } else {
                             this.out.println("No hay ningún usuario con ese nombre: " + words[0].trim());
