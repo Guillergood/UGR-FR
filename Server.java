@@ -24,7 +24,6 @@ public class Server {
         ServerSocket server;
         int port = 2222;
         int maxClients = 10;
-        int totalClients = 0;
         Procesador[] threads = new Procesador[maxClients];
         
         // Open the Server
@@ -39,7 +38,7 @@ public class Server {
                 for (i = 0; i < maxClients && !asignado; i++) {
                     if (threads[i] == null) {
                         threads[i] = new Procesador(client, threads);
-                        System.out.print("Un cliente lanzado ...");
+                        System.out.print("Un nuevo cliente se ha unido.\n");
                         threads[i].start();
                         asignado = true;
                     }

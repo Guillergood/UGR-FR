@@ -17,33 +17,27 @@ import java.net.Socket;
  */
 public class ProcesoLeer extends Thread 
 {
-    private String hostName;
-    private int portNumber;
+    private Socket socket;
     
-    public ProcesoLeer(String hostName, int portNumber)
+    public ProcesoLeer(Socket socket)
     {
-            this.hostName = hostName;
-            this.portNumber = portNumber;
+        this.socket = socket;
     }
     
     public void run()
     {    
         try
         {            
-            Socket socket = new Socket(hostName, portNumber);
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);                   
-
+            //PrintWriter out = new PrintWriter(socket.getOutputStream(), true);                   
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        
             String inputLine;
             while ((inputLine = in.readLine()) != null) 
             {
-                out.println(inputLine);
+                //out.println(inputLine);
                 System.out.println(inputLine); //Añadida por mi, para mostrar en pantalla.
             }
         } catch (IOException e) {
-            System.out.println("Exception caught when trying to listen on port "
-                + portNumber + " or listening for a connection");
+            System.out.println("Exception caught when trying to listen the port or listening for a connection");
             System.out.println(e.getMessage());
         }
     }

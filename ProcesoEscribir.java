@@ -17,27 +17,23 @@ import java.net.UnknownHostException;
  */
 public class ProcesoEscribir extends Thread 
 {
+    private Socket echoSocket;
     private final String clientName;
-    private final String hostName;
-    private final int portNumber;
 
-    public ProcesoEscribir(String clientName, String hostName, int portNumber)
+    public ProcesoEscribir(Socket echoSocket, String clientName)
     {
+        this.echoSocket = echoSocket;
         this.clientName = clientName;
-        this.hostName = hostName;
-        this.portNumber = portNumber;
-        
     }
     
     @Override
     public void run()
     {
         try (
-            Socket echoSocket = new Socket(hostName, portNumber);
-            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
+            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
         ) {
+            //Indicamos que nos hemos unido al chat.
+            out.println("/NewUser" + " " + clientName);
             String userInput;
             while ((userInput = stdIn.readLine()) != null) 
             {
@@ -45,11 +41,11 @@ public class ProcesoEscribir extends Thread
                 out.println(clientName + " " + userInput);
             }
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + hostName);
+            System.err.println("Don't know about host ");
             System.exit(1);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " +
-                hostName);
+            System.err.println("Couldn't get I/O for the connection to host");
+            System.out.println(e.getMessage());
             System.exit(1);
         } 
     }

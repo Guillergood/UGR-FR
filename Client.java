@@ -24,10 +24,7 @@ public class Client {
      */
     public static void main(String[] args) {
         Socket cliente;
-        DataInputStream in;
-        DataOutputStream out;
         String nombre;
-        Scanner consola;
         String host = "localhost";
         int port = 2222;
         
@@ -37,18 +34,15 @@ public class Client {
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
                 System.out.print("Introduzca su nombre de usuario: ");
                 nombre = stdIn.readLine();
-                stdIn.close();
+                //stdIn.close();
             } while (nombre.isEmpty());
             nombre = "@" + nombre;
 
             cliente = new Socket(host, port);
-            in = new DataInputStream(cliente.getInputStream());
-            out = new DataOutputStream(cliente.getOutputStream());
-            consola = new Scanner(System.in);
             
             //Lanzamos los procesos para leer y escribir mensajes.
-            Thread hiloLectura = new ProcesoLeer(host, port);
-            Thread hiloEscritura = new ProcesoEscribir(nombre, host, port);
+            Thread hiloLectura = new ProcesoLeer(cliente);
+            Thread hiloEscritura = new ProcesoEscribir(cliente, nombre);
             
             hiloLectura.start();    
             hiloEscritura.start();

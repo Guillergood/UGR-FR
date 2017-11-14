@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.io.IOException;
 
 /*
@@ -18,7 +19,8 @@ import java.io.IOException;
  public class Procesador extends Thread {
     Socket clientSocket;
     private int maxClients;
-    Procesador[] threads;
+    private final Procesador[] threads;
+    private final ArrayList <String> names = new ArrayList<>();
     BufferedReader in = null;
     PrintWriter out = null;
 
@@ -40,19 +42,46 @@ import java.io.IOException;
 
         while (true) {
             try {
-                String mensaje = in.readLine();
-                String[] words = mensaje.split("\\s+", 3);
-                if (words[1].startsWith("@")) {
-                    for (int i = 0; i < maxClients; i++) {
+                String mensaje;
+                while ((mensaje = in.readLine().trim()) != null) {
+                    //Adaptamos el texto
+                    String[] words = mensaje.split("\\s+", 2);
+                    //Recogemos los nombres de todos los usuarios conectados
+                    //y los almacenamos
+                    if (words[0].trim().equals("/NewUser")) {
+                        synchronized(this) {
+                            names.add(words[1].trim());
+                            this.out.println("Nuevo usuario: " + words[1].trim());
+                            for (int i = 0; i < maxClients; i++) {
+                                if (threads[i] != null && threads[i] != this) {
+                                    mensaje = words[1] + " se ha unido al chat.\n";
+                                    threads[i].out.println(mensaje);
+                                }
+                            }
+                            //Listamos los usuarios:
+                            for (String n : names) {
+                                this.out.println("Usuario: " + n + "\n");
+                            }
 
-                    }
-                } else { 
-                    // Mensaje publico
-                    synchronized(this) {
-                        for (int i = 0; i < maxClients; i++) {
-                            if (threads[i] != null) {
-                                mensaje = "<"+words[0]+">" + words[1] +" "+ words[2];
-                                threads[i].out.println(mensaje);
+                        }
+                    } else if (words[1].trim().startsWith("@")) {
+                        mensaje = words[1].trim();
+                        words = mensaje.split("\\s+", 2);
+                        if (names.contains(words[0].trim())) {
+                            threads[names.indexOf(words[0].trim())].out.println(mensaje);
+                        } else {
+                            this.out.println("No hay ningún usuario con ese nombre: " + words[0].trim());
+                        }
+                    } else { 
+                        // Mensaje publico
+                        synchronized(this) {
+                            String name = words[0].trim();
+                            mensaje = words[1].trim();
+                            for (int i = 0; i < maxClients; i++) {
+                                if (threads[i] != null && threads[i] != this) {
+                                    mensaje = "<"+name+">" +" "+ mensaje;
+                                    threads[i].out.println(mensaje);
+                                }
                             }
                         }
                     }
