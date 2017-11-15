@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -44,7 +45,9 @@ public class Server {
                     }
                 } 
                 if (!asignado) {
-                    System.out.print("Chat lleno, por favor, inténtelo más tarde");
+                    PrintStream os = new PrintStream(client.getOutputStream());
+                    os.println("Chat lleno, por favor, inténtelo más tarde");
+                    os.close();
                     client.close();
                 }
                 

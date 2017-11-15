@@ -13,7 +13,7 @@ import java.net.Socket;
 
 /**
  *
- * @author superkorlas
+ * @author Alejandro de la Plata Ramos
  */
 public class ProcesoLeer extends Thread 
 {

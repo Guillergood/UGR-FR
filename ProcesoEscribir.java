@@ -37,8 +37,10 @@ public class ProcesoEscribir extends Thread
             String userInput;
             while ((userInput = stdIn.readLine()) != null) 
             {
-                //Gestionar mensjaje.
-                out.println(clientName + " " + userInput);
+                //Gestionar mensaje.
+                if (!userInput.trim().isEmpty()) {
+                    out.println(clientName + " " + userInput);
+                }
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host ");
